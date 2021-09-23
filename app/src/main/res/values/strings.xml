@@ -1,0 +1,16 @@
+<resources>
+    <!-- Menu -->
+    <string name="menu_StartInterface">打开自启动设置</string>
+    <string name="menu_DetailInterface">打开APP设置</string>
+    <string name="menu_ShowRecentDialog">查看最近自动打卡记录</string>
+
+    <string name="app_name">江苏大学自动健康打卡</string>
+    <string name="usernameHint">用户名（学号）：</string>
+    <string name="inputEmptyHint">未填写</string>
+    <string name="passwordHint">密码（一卡通）：</string>
+    <string name="autoClockTimeHint">自动打卡时间：</string>
+    <string name="timeChoiceButtonHint">选择时间</string>
+    <string name="cancelAutoClockHint">取消定时任务</string>
+    <string name="testButtonHint">打卡测试</string>
+    <string name="saveButtonHint"><![CDATA[保存&定时运行]]></string>
+</resources>
