@@ -1,20 +1,5 @@
 name-template: 'v$NEXT_PATCH_VERSION 🌈'
 tag-template: 'v$NEXT_PATCH_VERSION'
-categories:
-  - title: '🚀 新特性'
-    labels:
-      - 'feature'
-      - 'enhancement'
-      - '
-  - title: '🐛 修复'
-    labels:
-      - 'fix'
-      - 'bugfix'
-      - 'bug'
-  - title: '🧰 维护'
-    label: 'chore'
-change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
-change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 autolabeler:
   - label: 'chore'
     files:
@@ -31,6 +16,21 @@ autolabeler:
       - '/feature\/.+/'
     body:
       - '/JIRA-[0-9]{1,4}/'
+categories:
+  - title: '🚀 Feature'
+    labels:
+      - 'feature'
+      - 'enhancement'
+      - '
+  - title: '🐛 Fixed'
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+  - title: '🧰 Maintain'
+    label: 'chore'
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 template: |
   ## Changes
 
