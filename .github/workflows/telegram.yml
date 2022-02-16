@@ -16,8 +16,9 @@ jobs:
           format: markdown
           message: |
             ${{ github.actor }} 发布了新版本: ${{ github.event.release.name }}
-            发布内容: ${{ github.event.release.description }}
+            发布内容: 
+            ${{ github.event.release.body }}
             
             仓库: ${{ github.repository }}
             
-            链接: ${{ github.event.release.url }}
+            链接: ${{ github.event.release.html_url }}
