@@ -1,5 +1,7 @@
 name: telegram message
-on: [push]
+on: 
+  release:
+    types: [released]
 jobs:
 
   build:
@@ -12,9 +14,9 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            ${{ github.actor }} created commit:
-            Commit message: ${{ github.event.commits[0].message }}
+            ${{ github.actor }} 发布了新版本: ${{ github.event.name }}
+            发布内容: ${{ github.event.description }}
             
-            Repository: ${{ github.repository }}
+            仓库: ${{ github.repository }}
             
-            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+            链接: ${{ github.event.url }}
