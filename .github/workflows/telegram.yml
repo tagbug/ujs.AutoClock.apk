@@ -13,10 +13,13 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: html
           message: |
-            ${{ github.actor }} 发布了新版本: ${{ github.event.name }}
-            发布内容: ${{ github.event.description }}
+            ${{ github.actor }} 发布了新版本: ${{ github.event.release.name }}
+            
+            发布内容: 
+            ${{ github.event.release.body }}
             
             仓库: ${{ github.repository }}
             
-            链接: ${{ github.event.url }}
+            链接: ${{ github.event.release.html_url }}
