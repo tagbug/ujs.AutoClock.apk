@@ -37,9 +37,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val infoToShowWithStart =
-        listOf("为了保证定时任务效果，建议给予自启动权限，点击右上角有三个点导航到设置页", "通知推送效果可以手动调节，可以手动测试", "一天请不要测试太多次，否则OCR服务器可能会拒绝你的访问，第二天恢复")
+        listOf("为了保证定时任务效果，建议给予自启动权限，点击右上角有三个点导航到设置页", "通知推送效果可以手动调节，可以手动测试", "由于OCR服务器限制，为了稳定性考虑，现在强制使用个人账号登录，如果没有账号，可以百度白描OCR，注册一个账号")
     private var username: String? = null
     private var password: String? = null
+    private var ocrUsername: String? = null
+    private var ocrPassword: String? = null
     private var timingTime: Calendar? = null
     private var logHistory: Deque<String> = ArrayDeque(100)
     private var logHistoryIterator: Iterator<String>? = null
@@ -48,6 +50,8 @@ class MainActivity : AppCompatActivity() {
         getSharedPreferences(configFileName, MODE_PRIVATE).apply {
             username = getString("username", null)
             password = getString("password", null)
+            ocrUsername = getString("ocrUsername", null)
+            ocrPassword = getString("ocrPassword", null)
             getString("timingTime", null)?.apply {
                 ObjectToBase64.decode(this)?.apply { timingTime = this as Calendar }
             }
@@ -59,6 +63,8 @@ class MainActivity : AppCompatActivity() {
         getSharedPreferences(configFileName, MODE_PRIVATE).edit {
             putString("username", username)
             putString("password", password)
+            putString("ocrUsername", ocrUsername)
+            putString("ocrPassword", ocrPassword)
             putString("timingTime", ObjectToBase64.encode(timingTime))
         }
     }
@@ -66,6 +72,8 @@ class MainActivity : AppCompatActivity() {
     private fun updateConfigToUI() {
         input_username.setText(username)
         input_password.setText(password)
+        input_ocr_username.setText(ocrUsername)
+        input_ocr_password.setText(ocrPassword)
         button_chooseAutoClockTime.text =
             timingTime?.let { String.format("%tT", timingTime) } ?: getText(R.string.timeChoiceButtonHint)
     }
@@ -90,9 +98,15 @@ class MainActivity : AppCompatActivity() {
         input_username.addTextChangedListener {
             username = input_username.text.toString()
         }
+        input_ocr_username.addTextChangedListener {
+            ocrUsername = input_ocr_username.text.toString()
+        }
         // 设置密码输入监听器
         input_password.addTextChangedListener {
             password = input_password.text.toString()
+        }
+        input_ocr_password.addTextChangedListener {
+            ocrPassword = input_ocr_password.text.toString()
         }
         // 设置选取定时运行时间按钮的回调
         button_chooseAutoClockTime.setOnClickListener {
@@ -117,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                 log("Error: 请先填写用户名和密码")
                 return@setOnClickListener
             }
-            ClockHelper(username, password, this, logTextView).run()
+            ClockHelper(username, password, ocrUsername, ocrPassword, this, logTextView).run()
         }
         // 设置保存&定时运行按钮的回调
         button_save.setOnClickListener {

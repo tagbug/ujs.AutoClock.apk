@@ -31,13 +31,17 @@ class AutoTimer : BroadcastReceiver() {
     private fun tryToRun(context: Context) {
         var username: String? = null
         var password: String? = null
+        var ocrUsername: String? = null
+        var ocrPassword: String? = null
         context.getSharedPreferences(MainActivity.Config.configFileName, Context.MODE_PRIVATE).apply {
             username = getString("username", null)
             password = getString("password", null)
+            ocrUsername = getString("ocrUsername", null)
+            ocrPassword = getString("ocrPassword", null)
         }
         if (username == null || password == null) {
             TimerNotification.showSimpleNotification(context, "自动打卡失败：用户名或密码未设置")
         }
-        ClockHelper(username, password, context).run()
+        ClockHelper(username, password, ocrUsername, ocrPassword, context).run()
     }
 }

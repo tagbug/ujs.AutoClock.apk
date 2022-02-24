@@ -60,6 +60,50 @@
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:gravity="center_vertical|end"
+            android:text="白描账号：" />
+
+        <EditText
+            android:id="@+id/input_ocr_username"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:autofillHints="username"
+            android:hint="@string/inputEmptyHint"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center_vertical|end"
+            android:text="白描密码：" />
+
+        <EditText
+            android:id="@+id/input_ocr_password"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:autofillHints="password"
+            android:hint="@string/inputEmptyHint"
+            android:inputType="textPassword" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center_vertical|end"
             android:text="@string/autoClockTimeHint" />
 
         <LinearLayout

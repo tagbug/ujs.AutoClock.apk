@@ -30,6 +30,8 @@ public class ClockHelper {
     private final Context context;
     private final String username;
     private final String password;
+    private final String ocrUsername;
+    private final String ocrPassword;
     private ArrayDeque<String> recentLog;
     private ObjectOutputStream objectOut;
     private TextView logText;
@@ -40,14 +42,17 @@ public class ClockHelper {
     private String captcha;
     private String OCR_uuid;
     private String OCR_token;
+    private String job_token;
     private String OCR_jobId;
     private HashMap<String, String> postForm;
     private HashMap<String, String> HealthForm;
     private OkHttpClient client;
 
-    public ClockHelper(String username, String password, Context context, TextView textView) {
+    public ClockHelper(String username, String password, String ocrUsername, String ocrPassword, Context context, TextView textView) {
         this.username = username;
         this.password = password;
+        this.ocrUsername = ocrUsername;
+        this.ocrPassword = ocrPassword;
         this.mode = textView == null ? Mode.Background : Mode.Test;
         this.context = context;
         this.logText = textView;
@@ -56,8 +61,8 @@ public class ClockHelper {
         }
     }
 
-    public ClockHelper(String username, String password, Context context) {
-        this(username, password, context, null);
+    public ClockHelper(String username, String password, String ocrUsername, String ocrPassword, Context context) {
+        this(username, password, ocrUsername, ocrPassword, context, null);
     }
 
     public void run() {
@@ -96,7 +101,7 @@ public class ClockHelper {
             this.GetLoginHTML();
         } else {
             if (progress.startsWith("onOCR")) {
-                Notification("错误", "OCR服务异常");
+                Notification("错误", "OCR服务异常，可能没有正确设置账号或密码");
             } else {
                 //重试次数过多
                 Notification("错误", "运行时重试次数过多，请检查网络连接是否正常");
@@ -318,10 +323,18 @@ public class ClockHelper {
         }
         OCR_uuid = sb.toString();
         Log.i("i", "Create OCR_uuid = " + OCR_uuid);
+        JSONObject ocrForm = new JSONObject();
+        try {
+            ocrForm.put("username", ocrUsername);
+            ocrForm.put("password", ocrPassword);
+            ocrForm.put("type", "mobile");
+        } catch (Exception ex) {
+            Failed(progress, Status.RunningError);
+        }
         Request request = new Request.Builder()
-                .url("https://web.baimiaoapp.com/api/user/login/anonymous")
+                .url("https://web.baimiaoapp.com/api/user/login")
                 .addHeader("x-auth-uuid", OCR_uuid)
-                .post(RequestBody.create(MediaType.parse("text/html; charset=utf-8"), ""))
+                .post(RequestBody.create(MediaType.parse("application/json; charset=UTF-8"), ocrForm.toString()))
                 .build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
@@ -382,6 +395,10 @@ public class ClockHelper {
                     try {
                         String result = response.body().string();
                         if (result.contains("success")) {
+                            String searchStr = "\"token\":\"";
+                            int start = result.indexOf(searchStr);
+                            int end = result.indexOf("\"", start + searchStr.length());
+                            job_token = result.substring(start + searchStr.length(), end);
                             onOCR3();
                         } else {
                             Failed(progress, Status.RunningError);
@@ -407,14 +424,14 @@ public class ClockHelper {
             ocrForm.put("name", "captcha.jfif");
             ocrForm.put("size", captchaBase64.length());
             ocrForm.put("dataUrl", captchaBase64);
-            ocrForm.put("result", "{}");
             ocrForm.put("status", "processing");
             ocrForm.put("isSuccess", false);
+            ocrForm.put("token", job_token);
         } catch (Exception e) {
             Failed(progress, Status.RunningError);
         }
         Request request = new Request.Builder()
-                .url("https://web.baimiaoapp.com/api/ocr/image/youdao")
+                .url("https://web.baimiaoapp.com/api/ocr/image/xunfei")
                 .addHeader("x-auth-uuid", OCR_uuid)
                 .addHeader("x-auth-token", OCR_token)
                 .post(RequestBody.create(MediaType.parse("application/json; charset=UTF-8"), ocrForm.toString()))
@@ -460,7 +477,7 @@ public class ClockHelper {
     private void onOCR4() {
         String progress = "onOCR4";
         Request request = new Request.Builder()
-                .url("https://web.baimiaoapp.com/api/ocr/image/youdao/status?jobStatusId=" + OCR_jobId)
+                .url("https://web.baimiaoapp.com/api/ocr/image/xunfei/status?jobStatusId=" + OCR_jobId)
                 .addHeader("x-auth-uuid", OCR_uuid)
                 .addHeader("x-auth-token", OCR_token)
                 .get()
