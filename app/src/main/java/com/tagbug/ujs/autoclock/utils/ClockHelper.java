@@ -12,6 +12,10 @@ import com.tagbug.ujs.autoclock.okhttp.CookieManager;
 
 import org.jetbrains.annotations.*;
 import org.json.*;
+import org.jsoup.*;
+import org.jsoup.Connection;
+import org.jsoup.nodes.*;
+import org.jsoup.select.*;
 
 import java.io.*;
 import java.net.*;
@@ -84,10 +88,6 @@ public class ClockHelper {
         postForm.put("_eventId", "");
         postForm.put("rmShown", "");
         HealthForm = new HashMap<>();
-        String[] keys = {"ykt", "dwmc", "xb", "zy", "bj", "xm", "zjh", "nl", "sjh", "sfyxszd", "sfid", "csid", "xqid", "xxdz", "jqdt", "sffx", "dzsj_m", "dzsj_d", "czjtgj", "jtgjbc", "yxzt", "mqzdyqdyjcs", "zdyq", "sfgtjzryfrks", "xsfxbj", "xwwd", "swwd", "qtyc", "bz", "latitude", "longitude", "btn", "jzymqk", "wjzyy", "ywcdyz", "ywcdez", "ywcdsz"};
-        for (String key : keys) {
-            HealthForm.put(key, "");
-        }
         GetLoginHTML();
     }
 
@@ -603,40 +603,11 @@ public class ClockHelper {
                         String result = response.body().string();
                         String searchStr = "<div class=\"weui_cells weui_cells_form\">";
                         if (result.contains(searchStr)) {
+                            Document doc = Jsoup.parse(result);
                             //设置HealForm表单
-                            for (String key : HealthForm.keySet()) {
-                                searchStr = "name=\"" + key + "\"";
-                                int start = result.indexOf(searchStr) + searchStr.length();
-                                int valuestart = result.indexOf("value=\"", start) + 7;
-                                int lebelend = result.indexOf(">", start);
-                                if (valuestart < lebelend) {
-                                    //value在HTML标签内，判断是否为单选
-                                    if (result.indexOf("type=\"radio\"", start) < lebelend) {
-                                        //单选
-                                        while (result.indexOf("checked=\"checked\"", start) > lebelend) {
-                                            start = result.indexOf(searchStr, lebelend) + searchStr.length();
-                                            lebelend = result.indexOf(">", start);
-                                        }
-                                        //被选择项，读value
-                                        valuestart = result.indexOf("value=\"", start) + 7;
-                                        int valueend = result.indexOf("\"", valuestart);
-                                        HealthForm.replace(key, result.substring(valuestart, valueend));
-                                    } else {
-                                        //输入框，直接读value
-                                        int valueend = result.indexOf("\"", valuestart);
-                                        HealthForm.replace(key, result.substring(valuestart, valueend));
-                                    }
-                                } else {
-                                    //只有option了
-                                    do {
-                                        start = result.indexOf("<option", lebelend) + 7;
-                                        lebelend = result.indexOf(">", start);
-                                    } while (result.indexOf("selected=\"true\"", start) > lebelend);
-                                    //被选择项，读value
-                                    valuestart = result.indexOf("value=\"", start) + 7;
-                                    int valueend = result.indexOf("\"", valuestart);
-                                    HealthForm.replace(key, result.substring(valuestart, valueend));
-                                }
+                            FormElement form = (FormElement) doc.selectFirst("form");
+                            for (Connection.KeyVal entry : form.formData()) {
+                                HealthForm.put(entry.key(), entry.value());
                             }
                             HealthForm.replace("btn", "");
                             HealthForm.replace("xwwd", "36.5");
