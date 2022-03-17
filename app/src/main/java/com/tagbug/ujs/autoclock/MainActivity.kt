@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                 { _, hourOfDay, minute ->
                     timingTime!!.set(Calendar.HOUR_OF_DAY, hourOfDay)
                     timingTime!!.set(Calendar.MINUTE, minute)
-                    timingTime!!.set(Calendar.SECOND, 1)
+                    timingTime!!.set(Calendar.SECOND, 0)
                     log(String.format("你选择的定时运行时间为：%tT", timingTime))
                     updateConfigToUI()
                 },

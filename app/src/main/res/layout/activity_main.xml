@@ -109,12 +109,14 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:layout_weight="7">
 
             <Button
                 android:id="@+id/button_chooseAutoClockTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/timeChoiceButtonHint"
                 tools:ignore="ButtonStyle,NestedWeights" />
@@ -122,13 +124,14 @@
             <Button
                 android:id="@+id/button_cancelAutoClock"
                 android:layout_width="0dp"
+                android:layout_gravity="center_vertical"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:text="@string/cancelAutoClockHint"
                 android:textSize="12sp"
-                android:visibility="invisible"
+                android:visibility="visible"
                 tools:ignore="ButtonStyle" />
         </LinearLayout>
     </LinearLayout>
